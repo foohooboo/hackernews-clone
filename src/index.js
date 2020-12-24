@@ -12,18 +12,39 @@ const resolvers = {
             return context.prisma.link.findMany()
         },
         link: async (parent, args, context) => {
-            context.prisma.link.find()
-        }
+            return context.prisma.link.findUnique({
+                where: {
+                    id: parseInt(args.id),
+                },
+            })
+        },
     },
     Mutation: {
         post: (parent, args, context, info) => {
-            const newLink = context.prisma.link.create({
+            return context.prisma.link.create({
                 data: {
                     url: args.url,
                     description: args.description,
                 },
             })
-            return newLink
+        },
+        updateLink: (parent, args, context, info) =>{
+            return context.prisma.link.update({
+                where: {
+                    id: parseInt(args.id)
+                },
+                data: {
+                    url: args.url,
+                    description: args.description,
+                },
+            })
+        },
+        deleteLink: (parent, args, context, info) =>{
+            return context.prisma.link.delete({
+                where: {
+                    id: parseInt(args.id)
+                },
+            })
         },
     },
 }
