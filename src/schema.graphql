@@ -18,6 +18,10 @@ type Query {
         deleteLink(id: ID!): Link
     }
 
+    type Subscription {
+        newLink: Link
+    }
+
     type Link {
         id: ID!
         description: String!

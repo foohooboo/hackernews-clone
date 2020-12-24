@@ -1,8 +1,13 @@
 const { PrismaClient } = require("@prisma/client")
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server');
 const fs = require('fs');
 const path = require('path');
 const { info } = require('console');
+// const Mutation = require('./resolvers/Mutation')
+// const Query = require('./resolvers/Query')
+const Subscription = require('./resolvers/Subscription')
+// const User = require('./resolvers/User')
+// const Link = require('./resolvers/Link')
 
 
 const resolvers = {
@@ -47,9 +52,11 @@ const resolvers = {
             })
         },
     },
+    Subscription,
 }
 
 const prisma = new PrismaClient()
+const pubsub = new PubSub()
 
 const server = new ApolloServer({
     typeDefs: fs.readFileSync(
@@ -57,10 +64,14 @@ const server = new ApolloServer({
         'utf8'
     ),
     resolvers,
-    context: {
-        prisma,
+    context: ({ req }) => {
+        return {
+            ...req,
+            prisma,
+            pubsub,
+        };
     }
-})
+});
 
 server
     .listen()
